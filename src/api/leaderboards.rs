@@ -2,7 +2,6 @@ use napi_derive::napi;
 
 #[napi]
 pub mod leaderboards {
-    use napi::bindgen_prelude::BigInt;
     use std::collections::HashMap;
     use std::sync::{Arc, Mutex};
     use steamworks::{
@@ -16,7 +15,7 @@ pub mod leaderboards {
     pub struct LeaderboardEntry {
         pub global_rank: i32,
         pub score: i32,
-        pub steam_id: BigInt,
+        pub steam_id: String,
         pub details: Vec<i32>,
     }
 
@@ -85,7 +84,7 @@ pub mod leaderboards {
             LeaderboardEntry {
                 global_rank: entry.global_rank,
                 score: entry.score,
-                steam_id: BigInt::from(entry.user.raw()),
+                steam_id: entry.user.raw().to_string(),
                 details: entry.details,
             }
         }
@@ -182,7 +181,7 @@ pub mod leaderboards {
                     Some(LeaderboardEntry {
                         global_rank: result.global_rank_new,
                         score: result.score,
-                        steam_id: BigInt::from(client.user().steam_id().raw()),
+                        steam_id: client.user().steam_id().raw().to_string(),
                         details: score_details,
                     })
                 }
