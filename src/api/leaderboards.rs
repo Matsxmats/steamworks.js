@@ -223,7 +223,7 @@ pub mod leaderboards {
                 request_type,
                 range_start as usize,
                 range_end as usize,
-                0, // max_detail_data_size - 0 means no details
+                3, // max_detail_data_size - number of int32 detail fields to fetch
                 move |result| {
                     if let Some(sender) = tx.take() {
                         let _ = sender.send(result);
