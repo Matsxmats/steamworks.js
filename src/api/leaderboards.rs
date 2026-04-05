@@ -85,7 +85,7 @@ pub mod leaderboards {
                 global_rank: entry.global_rank,
                 score: entry.score,
                 steam_id: entry.user.raw().to_string(),
-                details: entry.details,
+                details: vec![], // details decoded from composite score in JS, avoid Vec corruption
             }
         }
     }
