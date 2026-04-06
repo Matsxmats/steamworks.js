@@ -184,6 +184,7 @@ pub mod leaderboards {
                         global_rank: result.global_rank_new,
                         score: result.score,
                         steam_id: client.user().steam_id().raw().to_string(),
+                        steam_name: client.friends().name(),
                         details: score_details,
                     })
                 }
