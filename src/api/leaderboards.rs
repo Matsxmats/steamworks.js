@@ -16,6 +16,7 @@ pub mod leaderboards {
         pub global_rank: i32,
         pub score: i32,
         pub steam_id: String,
+        pub steam_name: String,
         pub details: Vec<i32>,
     }
 
@@ -85,6 +86,7 @@ pub mod leaderboards {
                 global_rank: entry.global_rank,
                 score: entry.score,
                 steam_id: entry.user.raw().to_string(),
+                steam_name: String::new(),
                 details: vec![], // details decoded from composite score in JS, avoid Vec corruption
             }
         }
@@ -231,7 +233,21 @@ pub mod leaderboards {
             );
 
             match rx.await {
-                Ok(Ok(entries)) => entries.into_iter().map(LeaderboardEntry::from).collect(),
+                Ok(Ok(entries)) => entries
+                    .into_iter()
+                    .map(|entry| {
+                        // After download_leaderboard_entries completes, Steam has cached persona
+                        // data for the returned players. get_friend().name() reads from that cache.
+                        let steam_name = client.friends().get_friend(entry.user).name();
+                        LeaderboardEntry {
+                            global_rank: entry.global_rank,
+                            score: entry.score,
+                            steam_id: entry.user.raw().to_string(),
+                            steam_name,
+                            details: vec![],
+                        }
+                    })
+                    .collect(),
                 _ => Vec::new(),
             }
         } else {
